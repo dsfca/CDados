@@ -12,9 +12,31 @@ import ds_functions as ds
 from sklearn.feature_selection import SelectKBest, chi2
 
 data: pd.DataFrame = pd.read_csv('../CD databases/qsar_oral_toxicity.csv')
+
+#Remove correlated variables
+corr_mtx = dataOral.corr()
+correlated = 0
+indexes = []
+for i in range(len(corr_mtx)):
+    for j in range(len(corr_mtx)):
+        if ((corr_mtx.iat[i,j] > 0.75 or corr_mtx.iat[i,j] < -0.75) and i > j):
+            if(i in corr_mtx and j in corr_mtx):
+            elif(j in corr_mtx):
+            else:
+                indexes.append(i)
+                correlated = correlated + 1           
+print(correlated)
+print(indexes)
+
+#Remove correlated variables
+dataOral = dataOral.drop(dataOral.columns[indexes], axis=1)
+print(len(dataOral.columns))
+
+####
 y: np.ndarray = data.pop('classification').values
 X: np.ndarray = data.values
 labels = pd.unique(y)
+
 
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 

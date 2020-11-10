@@ -119,11 +119,15 @@ def plot_confusion_matrix(cnf_matrix: np.ndarray, classes_names: np.ndarray,
         ax.text(j, i, format(cm[i, j], fmt), color='w', horizontalalignment="center")
 
 
-def plot_evaluation_results(labels: np.ndarray, trn_y, prd_trn, tst_y, prd_tst):
+def plot_evaluation_results(labels: np.ndarray, trn_y, prd_trn, tst_y, prd_tst, *args):
     cnf_mtx_trn = metrics.confusion_matrix(trn_y, prd_trn, labels)
     tn_trn, fp_trn, fn_trn, tp_trn = cnf_mtx_trn.ravel()
     cnf_mtx_tst = metrics.confusion_matrix(tst_y, prd_tst, labels)
     tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
+
+    set_title = "Model's performance over Train and Test sets"
+    if args:
+        set_title = args[0]
 
     evaluation = {'Accuracy': [(tn_trn + tp_trn) / (tn_trn + tp_trn + fp_trn + fn_trn),
                                (tn_tst + tp_tst) / (tn_tst + tp_tst + fp_tst + fn_tst)],
@@ -132,7 +136,7 @@ def plot_evaluation_results(labels: np.ndarray, trn_y, prd_trn, tst_y, prd_tst):
                   'Precision': [tp_trn / (tp_trn + fp_trn), tp_tst / (tp_tst + fp_tst)]}
 
     fig, axs = plt.subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
-    multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title="Model's performance over Train and Test sets")
+    multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title=title1)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1])
 
 

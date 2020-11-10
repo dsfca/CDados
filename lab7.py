@@ -14,9 +14,33 @@ y: np.ndarray = data.pop('DEATH_EVENT').values
 X: np.ndarray = data.values
 labels = pd.unique(y)
 
-#valX, valY = train_test_split(X, y, train_size=0.1, stratify=true)
-#y.pop(valY)
-#X.pop(valX)
+#Feature selection
+
+#Removing features with low variance
+from sklearn.feature_selection import VarianceThreshold
+thresholder = VarianceThreshold(threshold=0.8)
+data_high_variance = thresholder.fit_transform(data)
+
+
+#Univariate feature selection
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+print(X.shape)
+X_new = SelectKBest(chi2, k=8).fit_transform(X, y)
+X_new.shape
+
+
+#Tree-based feature selection
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.feature_selection import SelectFromModel
+print(X.shape)
+clf = ExtraTreesClassifier(n_estimators=20)
+clf = clf.fit(X, y)
+print(clf.feature_importances_)
+model = SelectFromModel(clf, prefit=True)
+X_new = model.transform(X)
+X_new.shape           
+
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 n_estimators = [5, 10, 25, 50, 75, 100, 150, 200, 250, 300]
@@ -26,6 +50,8 @@ best = ('', 0, 0)
 last_best = 0
 best_tree = None
 
+
+#Random Forest
 cols = len(max_depths)
 plt.figure()
 fig, axs = plt.subplots(1, cols, figsize=(cols*ds.HEIGHT, ds.HEIGHT), squeeze=False)
@@ -49,13 +75,13 @@ for k in range(len(max_depths)):
                            xlabel='nr estimators', ylabel='accuracy', percentage=True)
 
 plt.show()
-print('Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+print('Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))    
 
-#Check performance
+
+#Performance
 prd_trn = best_tree.predict(trnX)
 prd_tst = best_tree.predict(tstX)
 ds.plot_evaluation_results(pd.unique(y), trnY, prd_trn, tstY, prd_tst)
-
 
 
 
@@ -71,14 +97,21 @@ import ds_functions as ds
 
 #Get correlated variables
 dataOral: pd.DataFrame = pd.read_csv('/Users/daniela/Desktop/Mestrado/CDados/Projeto/qsar_oral_toxicity1.csv')
+    
+    
+#Remove correlated variables
 corr_mtx = dataOral.corr()
 correlated = 0
 indexes = []
 for i in range(len(corr_mtx)):
     for j in range(len(corr_mtx)):
         if ((corr_mtx.iat[i,j] > 0.75 or corr_mtx.iat[i,j] < -0.75) and i > j):
-            correlated = correlated + 1
-            indexes.append(i)
+            if(i in corr_mtx and j in corr_mtx):
+            elif(j in corr_mtx):
+            else:
+                indexes.append(i)
+                correlated = correlated + 1
+            
 print(correlated)
 print(indexes)
 
@@ -125,7 +158,8 @@ for k in range(len(max_depths)):
 plt.show()
 print('Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
-#Check performance
+
+#Performance
 prd_trn = best_tree.predict(trnX)
 prd_tst = best_tree.predict(tstX)
 ds.plot_evaluation_results(pd.unique(y), trnY, prd_trn, tstY, prd_tst)

@@ -23,3 +23,12 @@ y_pred = classifier.predict(X_test)
 cm = confusion_matrix(y_test, y_pred)
 
 ratio = (cm[0][0] + cm[1][1]) / len(X_test)
+
+from sklearn.feature_selection import VarianceThreshold
+
+th = VarianceThreshold(threshold=0.8)
+#tox_high_variance = th.fit_transform(data_tox)
+heart_high_variance = th.fit_transform(dataset)
+
+print('Original feature number: ', X.shape[1])
+print('Reduced feature number: ', heart_high_variance.shape[1])

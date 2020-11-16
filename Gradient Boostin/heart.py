@@ -34,7 +34,7 @@ last_best = 0
 best_tree = None
 
 for samp in lst:
-    trnX, trnY = samp.fit_resample(trnX, trnY)
+        trnX, trnY = samp.fit_resample(trnX, trnY)
 
     cols = len(max_depths)
     plt.figure()

@@ -99,19 +99,16 @@ import ds_functions as ds
 dataOral: pd.DataFrame = pd.read_csv('/Users/daniela/Desktop/Mestrado/CDados/Projeto/qsar_oral_toxicity1.csv')
     
     
-#Remove correlated variables
-corr_mtx = dataOral.corr()
+#Indentify correlated variables
+corr_mtx = data.corr()
 correlated = 0
 indexes = []
 for i in range(len(corr_mtx)):
     for j in range(len(corr_mtx)):
         if ((corr_mtx.iat[i,j] > 0.75 or corr_mtx.iat[i,j] < -0.75) and i > j):
-            if(i in corr_mtx and j in corr_mtx):
-            elif(j in corr_mtx):
-            else:
+            if(not(i in corr_mtx and j in corr_mtx) and not(j in corr_mtx)):
                 indexes.append(i)
-                correlated = correlated + 1
-            
+                correlated = correlated + 1           
 print(correlated)
 print(indexes)
 

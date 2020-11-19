@@ -20,7 +20,7 @@ cmap_orange = clrs.LinearSegmentedColormap.from_list("myCMPOrange", oranges)
 cmap_blues = clrs.LinearSegmentedColormap.from_list("myCMPBlues", blues)
 
 
-LINE_COLOR = #0C70B2
+LINE_COLOR = '#0C70B2'
 FILL_COLOR = my_palette['pale blue']
 DOT_COLOR = my_palette['blue3']
 ACTIVE_COLORS = [my_palette['pale blue'], my_palette['yellow'], my_palette['pale orange'],
